@@ -110,7 +110,7 @@ def push_serverchan3(sendkey: str, title: str, desp: str = "",
     """
     推送到 Server酱³
     - sendkey: 你的 SendKey（形如 sctp123456tXXXX...）
-    - uid: 可选；不填则自动从 sendkey 提取（正则 ^sctp(\d+)t）
+    - uid: 可选；不填则自动从 sendkey 提取（正则 ^sctp(\\d+)t）
     - title/desp: 标题与正文（desp 支持 Markdown）
     - tags/short: 可选
     返回: (是否成功, 返回文本)
@@ -397,3 +397,4 @@ if __name__ == '__main__':
     end_time = time.time()
     logging.info(f'complete with {(end_time - start_time) * 1000} ms')
     logging.info('===========ending============')
+
