@@ -33,11 +33,13 @@ fork于gitee内的一名大佬作品https://gitee.com/FancyCabbage/skyland-auto-
 
 ## 方法1
 
-1.先装python（3.6及以上）且下载`requirements.txt` 运行`pip install -r requirements.txt`
+1.安装python（3.6及以上）
 
-2.下载脚本`skyland.py`,放置在`requirements.txt`文件同目录下
+2.下载`requirements.txt` ，在该目录下打开命令提示符，运行`pip install -r requirements.txt`
 
-3.双击本文件（弹出一个黑框框代表你成功了）
+2.下载脚本`skyland.py`、`SecuritySm.py`,这两个文件都要放置在`requirements.txt`文件同目录下
+
+3.命令提示符运行`python skyland.py`（结果输出如下就代表你成功了）
 ![img.png](assets/img_0.png)
 
 （以上3步可以用我打好的exe文件直接运行，链接见[release](https://gitee.com/FancyCabbage/skyland-auto-sign/releases)
@@ -265,5 +267,6 @@ SC3_UID（可选）: 若不填会从SC3_SENDKEY自动解析。（形如 12345）
 
 
 现已解决，具体实现看`SecuritySm.py`文件
+
 
 
