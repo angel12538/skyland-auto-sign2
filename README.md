@@ -33,9 +33,9 @@ fork于gitee内的一名大佬作品https://gitee.com/FancyCabbage/skyland-auto-
 
 ## 方法1
 
-1.先装python（3.6及以上）且安装requests库.cmd 运行`pip install requests`
+1.先装python（3.6及以上）且下载`requirements.txt` 运行`pip install -r requirements.txt`
 
-2.下载脚本`skyland.py`
+2.下载脚本`skyland.py`,放置在`requirements.txt`文件同目录下
 
 3.双击本文件（弹出一个黑框框代表你成功了）
 ![img.png](assets/img_0.png)
@@ -265,4 +265,5 @@ SC3_UID（可选）: 若不填会从SC3_SENDKEY自动解析。（形如 12345）
 
 
 现已解决，具体实现看`SecuritySm.py`文件
+
 
