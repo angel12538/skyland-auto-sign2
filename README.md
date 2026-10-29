@@ -262,12 +262,6 @@ CRON_TZ=Asia/Shanghai 0 15 8 * * *
 
 <a name="mobile"></a>
 
-### 使用手机操作
-
-手机可直接下载仓库中的 [cloud_functions.zip](cloud_functions/cloud_functions.zip)，再按华为云控制台支持的上传方式部署；具体操作见上面的部署说明。
-
-<a name="mode3"></a>
-
 ## 方法3
 
 使用Github Action自动运行脚本
