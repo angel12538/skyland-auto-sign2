@@ -256,7 +256,9 @@ CRON_TZ=Asia/Shanghai 0 15 8 * * *
 | 签到正常但没有收到推送 | 对应推送密钥、`push_success` 与日志中的渠道错误，以及手机端实际接收情况 |
 | 没有按时执行 | 触发器是否已启用、绑定版本是否正确，以及 Cron 中的时区和时间 |
 
-以后更新程序时，重新上传新的部署 ZIP 并部署，再手动测试一次。修改源码后需要重新构建部署包；手动构建、版本来源和校验方式见 [cloud_functions 部署说明](cloud_functions/README.md)。仓库提供的包已通过 Linux 构建和离线检查，实际账号签到与具体云端环境仍以部署后的测试结果为准。
+以后更新程序时，重新上传新的部署 ZIP 并部署，再手动测试一次。修改源码后需要重新构建部署包；Linux 手动打包可参考 [构建脚本](.build/build_cloud_function.sh) 和 [构建依赖](requirements-build.txt)，版本来源及校验值见 [PACKAGE_INFO.json](cloud_functions/PACKAGE_INFO.json) 与 [SHA256 校验文件](cloud_functions/cloud_functions.zip.sha256)。
+
+仓库提供的包已通过 Linux 构建和离线检查，实际账号签到与具体云端环境仍以部署后的测试结果为准。
 
 <a name="mobile"></a>
 
