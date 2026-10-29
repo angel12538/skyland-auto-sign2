@@ -1,8 +1,8 @@
 # skyland-auto-sign
 
-明日方舟森空岛一键签到脚本，基于python
+明日方舟、明日方舟：终末地的森空岛签到脚本，支持本地、GitHub Actions、Docker/NAS 与华为云 FunctionGraph。
 
-有三种方法部署
+有四种方法部署
 > 1.自己手动在电脑上运行（不想挂载在服务器上的用户推荐这个，因为可以配合MAA一键签到）
 >
 > 2.在云函数上部署（推荐，省时省力，不用装环境，几乎不用管）
@@ -31,9 +31,9 @@
 
 ## 方法1
 
-1.安装python（3.9版本及以上）。
+1.安装 Python 3.11 或以上版本。
 
-2.克隆源代码
+2.克隆源代码，并在仓库根目录执行 `python -m pip install -r requirements.txt` 安装固定版本依赖。
 
 3.命令提示符运行`python src/main.py`（结果输出如下就代表你成功了）
 ![img.png](assets/img_0.png)
@@ -82,65 +82,21 @@ TOKEN和日志应该都会被存储在MAA根路径下
 
 ## 方法2
 
-使用华为云挂载服务器签到（华为云有每月免费额度）
+使用华为云 FunctionGraph 的事件函数与定制运行时。
 
-在`cloud_functions`文件夹下的代码是华为云的适配好的代码。
+`cloud_functions/` 保存启动脚本和部署说明，签到入口在 `src/index.py`。部署包需要在 Linux 构建，生成到 `dist/cloud_functions/` 和 `dist/cloud_functions.zip`，不会随源码提交到 Git。
 
-1.首先注册登录华为云账号
-![img_7.png](assets/img_7.png)
+可以在本仓库 Actions 中运行 `Checks`，从通过检查的运行下载 `functiongraph-linux-x86_64` 产物，解开外层下载包后，将内部的 `cloud_functions.zip` 上传到云函数。
 
-2.注册且登录完成后，进入[这个网址](https://console.huaweicloud.com/functiongraph)
+配置 `TOKEN` 环境变量后执行测试调用；多账号支持换行或英文逗号分隔。三个推送渠道与本地、Actions 共用，任一签到失败会向华为云上报错误。最后根据控制台当前 Cron 语法和时区选项配置定时触发器。
 
-3.进入后可能要求你实名认证，实名认证一下即可。
-
-4.完成后点击右上角的'创建函数'按钮
-![img_8.png](assets/img_8.png)
-
-5.进入选择运行时环境为`定制运行时`， 并填一下脚本名称（随便填）。其它设置不用动
-![img_9.png](assets/img_9.png)
-
-6.进来后是这样的界面，点击右上角上传自zip文件（或者你在左边的编辑器里自己把文件一个个创建好复制粘贴进去也行）
-![img_10.png](assets/img_10.png)
-
-7.上传
-![img_11.png](assets/img_11.png)
-
-8.上传完成后应该是这个样子的
-![img_12.png](assets/img_12.png)
-
-9.选中`INPUT_HYPERGRYPH_TOKEN.txt`，在右边添加你的鹰角通行证.支持多个，换行添加下一个即可。
-![img_13.png](assets/img_13.png)
-
-10.保存完毕后，可以点击测试测试一下脚本。创建测试这里直接点击创建即可
-![img_14.png](assets/img_14.png)
-
-11.正常结束后是这个样子的（记得保存和部署）：
-![img_15.png](assets/img_15.png)
-
-12.为了让脚本每天执行，我们需要创建一个触发器
-![img_16.png](assets/img_16.png)
-
-触发器类型请选择`定时触发器`
-![img_17.png](assets/img_17.png)
-
-触发器类型选择`Cron表达式`
-![img_18.png](assets/img_18.png)
-
-然后填入这串东西`0 1 1 * * ?`
-它指的是每天凌晨1点01分会执行一次
-![img_19.png](assets/img_19.png)
-
-然后确定保存即可
-
-最后大功告成，等着每天发奖励即可！
-
-注意：如果森空岛登录失效，则可能需要重新配置你的鹰角网络通行证！
+完整步骤、手动构建方式和运行环境要求见 [华为云部署说明](cloud_functions/README.md)。构建产物不包含账号凭据；具体云端兼容性和实际签到结果需通过部署后的测试调用确认。
 
 <a name="mobile"></a>
 
 ### 使用手机操作
 
-//TODO
+手机可通过 GitHub Actions 下载构建产物，再按华为云控制台支持的上传方式部署；具体操作见上面的部署说明。
 
 <a name="mode3"></a>
 
@@ -172,9 +128,11 @@ TOKEN和日志应该都会被存储在MAA根路径下
 
 之后就可以自动运行签到了, 想要手动测试的话，选择左侧的Auto Sign > Run workflow, 刷新页面就能看到结果了
 
-现在可以在Github Action Variable中设置变量`EXIT_WHEN_FAIL = on`，当签到发生错误时，脚本会返回错误，进而你会收到来自Github的邮件，及时知道脚本运行情况
+签到失败默认返回非零退出码，工作流会标记为失败；可设置 Variable `EXIT_WHEN_FAIL=off` 关闭这一退出策略。推送失败默认记录错误，设置 `EXIT_WHEN_PUSH_FAIL=on` 后也会使工作流失败。GitHub 邮件通知仍取决于账号的 Actions 通知设置。
 
-<a name="mode3"></a>
+还支持 `PUSHPLUS_TOKEN`、`QMSG_TOKEN` 两个可选 Secret。推送检查渠道业务返回值；“请求被服务端接受”不等于通知最终送达。
+
+<a name="mode4"></a>
 
 ## 使用NAS部署
 
@@ -187,13 +145,29 @@ TOKEN和日志应该都会被存储在MAA根路径下
 
 每个面板可能创建方式不太一样，不展示了
 
+Docker 可通过 `docker build -t skyland-auto-sign .` 构建，再使用 `docker run --rm --env-file .env skyland-auto-sign` 运行。在本地 `.env` 中设置 `TOKEN` 及所需推送密钥；该文件、账号文件、实际推送配置和日志均被构建排除，镜像中不包含它们。容器以普通用户运行。
+
+本地推送配置也可将 `src/push/config.example.ini` 复制为 `src/push/config.ini` 后填写。实际配置文件已被 Git 和 Docker 忽略；环境变量优先于文件，旧拼写 `PUSHPLUSH_TOKEN` 会兼容并提示改名。
+
+网络请求默认连接/读取超时为 5/20 秒，不会自动重试签到 POST。使用代理时设置 `USE_PROXY=on`，可用 `PROXY_URL` 指定地址；`off`、`false`、`0` 均会关闭这个显式代理开关。系统标准代理环境变量仍按 Requests 规则生效。HTTPS 始终校验证书，私有 CA 可通过 `REQUESTS_CA_BUNDLE` 配置。
+
 <a name="multiple_account"></a>
 
 ## 多账号支持
 
-软件支持多个账号添加，在文件里换行即可
+普通 Token 支持换行或英文逗号分隔，解析后去重；也支持官网返回的完整账号 JSON、每行一个账号 JSON 或 JSON 数组。文件配置可用 `TOKEN_FILE` 指定路径。无账号的后台任务会明确失败，不进入交互提示。
 
-//todo
+每个角色和账号独立处理：一个角色失败不会跳过后续角色，已完成结果会保留。认证失效只报告当前账号的问题，不会删除保存其他账号的文件。明确的已签到响应按成功处理，未知非零业务码按失败处理。
+
+## 开发检查
+
+```sh
+python -m pip install -r requirements.txt
+python -m unittest discover -s test -v
+python -m pip check
+```
+
+测试禁止真实游戏和推送请求，覆盖失败状态、凭据保留、多账号解析、代理证书校验、日志脱敏、推送业务错误与云函数入口。`Checks` 工作流另外验证 Linux 部署包和 Docker 镜像不会携带本地凭据。
 
 ### 使用浏览器登录多个账号获得TOKEN时要注意的问题
 
