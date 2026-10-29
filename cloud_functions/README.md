@@ -8,7 +8,7 @@
 
 该构建使用固定版本的 PyPA manylinux 镜像，目标为 Linux x86_64、glibc 2.28 基线。目标云函数必须选择兼容的 x86_64 环境；构建信息保存在包内 `BUILD_INFO.json`。打包和离线启动检查不能替代在具体华为云环境中的测试调用。
 
-也可以在与目标架构、glibc 兼容的 Linux 环境手动构建：
+也可以在与目标架构、glibc 兼容的 Linux 环境手动构建。Python 需带有可供 PyInstaller 收集的 `libpython` 共享库；CI 使用固定版本且校验 SHA256 的 Astral 独立 Python，避免 manylinux 自带解释器缺少共享库的问题。
 
 ```sh
 python3 -m venv .venv

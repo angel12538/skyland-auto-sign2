@@ -26,6 +26,7 @@ jobs:
       - run: |
           sh -n cloud_functions/bootstrap
           sh -n .build/build_cloud_function.sh
+          sh -n .build/build_linux.sh
   cloud-package:
     needs: test
     runs-on: ubuntu-22.04
@@ -38,7 +39,7 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/workspace" -w /workspace \
             quay.io/pypa/manylinux_2_28_x86_64@sha256:e0adf18521ad35192df733a6c62d35df7801957d24e0470238aacecfab2188a3 \
-            /bin/bash -c '/opt/python/cp311-cp311/bin/python -m pip install -r requirements-build.txt && /opt/python/cp311-cp311/bin/python .build/build_cloud_function.py && /opt/python/cp311-cp311/bin/python .build/test_cloud_package.py'
+            /bin/sh .build/build_linux.sh
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: functiongraph-linux-x86_64
