@@ -1,10 +1,16 @@
 # 华为云 FunctionGraph 部署
 
-此目录保存定制运行时的启动脚本和部署说明。签到入口在 `src/index.py`，与本地和 GitHub Actions 共用签到、推送和脱敏逻辑。编译产物生成在 `dist/cloud_functions/`，ZIP 为 `dist/cloud_functions.zip`，不提交到 Git。
+此目录提供可直接上传的预构建部署包、定制运行时启动脚本和部署说明。签到入口在 `src/index.py`，与本地和 GitHub Actions 共用签到、推送和脱敏逻辑。
 
 ## 获取部署包
 
-在本仓库启用 GitHub Actions，运行 `Checks`。全部检查通过后，在该次运行的 Artifacts 下载 `functiongraph-linux-x86_64`。解开 GitHub 下载的外层压缩包，获得内部的 `cloud_functions.zip`。
+直接下载本目录的 **[cloud_functions.zip](cloud_functions.zip)**，上传到华为云 FunctionGraph 即可，无需启用 GitHub Actions，也无需在自己电脑上安装 Python 或编译。
+
+包内账号文件为空，账号与推送密钥在云函数环境变量中配置。可通过 [SHA256 校验文件](cloud_functions.zip.sha256) 核对下载完整性；[PACKAGE_INFO.json](PACKAGE_INFO.json) 记录了来源提交、已通过的构建检查、运行环境和对应源码指纹。
+
+需要重新构建时，可以启用 GitHub Actions 运行 `Checks`，在通过检查的运行中下载 `functiongraph-linux-x86_64` 产物；解开外层下载包得到 `cloud_functions.zip`。也可以使用下方的 Linux 手动构建方式。重新构建产物生成到 `dist/cloud_functions/` 和 `dist/cloud_functions.zip`。
+
+修改签到源码、依赖或启动脚本后，维护者应重新构建并同步更新本目录的 ZIP、校验文件和来源信息；修改源码不会自动改变已经编译好的部署包。
 
 该构建使用固定版本的 PyPA manylinux 镜像，目标为 Linux x86_64、glibc 2.28 基线。目标云函数必须选择兼容的 x86_64 环境；构建信息保存在包内 `BUILD_INFO.json`。打包和离线启动检查不能替代在具体华为云环境中的测试调用。
 

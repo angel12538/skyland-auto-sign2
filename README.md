@@ -84,9 +84,9 @@ TOKEN和日志应该都会被存储在MAA根路径下
 
 使用华为云 FunctionGraph 的事件函数与定制运行时。
 
-`cloud_functions/` 保存启动脚本和部署说明，签到入口在 `src/index.py`。部署包需要在 Linux 构建，生成到 `dist/cloud_functions/` 和 `dist/cloud_functions.zip`，不会随源码提交到 Git。
+`cloud_functions/` 已提供可直接上传的 **[预构建部署包](cloud_functions/cloud_functions.zip)**、启动脚本和部署说明，签到入口在 `src/index.py`。下载现成包无需启用 GitHub Actions，也无需自己编译。
 
-可以在本仓库 Actions 中运行 `Checks`，从通过检查的运行下载 `functiongraph-linux-x86_64` 产物，解开外层下载包后，将内部的 `cloud_functions.zip` 上传到云函数。
+下载 `cloud_functions/cloud_functions.zip` 后直接上传到云函数。修改源码后，维护者可在 Linux 手动重新构建，或运行 Actions 的 `Checks` 获取新产物，再更新仓库里的部署包及校验信息。
 
 配置 `TOKEN` 环境变量后执行测试调用；多账号支持换行或英文逗号分隔。三个推送渠道与本地、Actions 共用，任一签到失败会向华为云上报错误。最后根据控制台当前 Cron 语法和时区选项配置定时触发器。
 
@@ -96,7 +96,7 @@ TOKEN和日志应该都会被存储在MAA根路径下
 
 ### 使用手机操作
 
-手机可通过 GitHub Actions 下载构建产物，再按华为云控制台支持的上传方式部署；具体操作见上面的部署说明。
+手机可直接下载仓库中的 [cloud_functions.zip](cloud_functions/cloud_functions.zip)，再按华为云控制台支持的上传方式部署；具体操作见上面的部署说明。
 
 <a name="mode3"></a>
 
